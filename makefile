@@ -1,5 +1,5 @@
 CC = g++
-CXXFLAGS = -g -Wall -std=c++11 -I. -pthread
+CXXFLAGS = -g -Wall -march=native -std=c++11 -I. -pthread
 LDFLAGS = -L. -lpthread -lfnet
 NET_SRC = Thread.cpp ThreadPool.cpp EventLoop.cpp Timestamp.cpp Channel.cpp Poller.cpp
 NET_LIB = libfnet.a

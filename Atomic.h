@@ -10,6 +10,9 @@
  * getAndAdd(x) : 取值后增加x
  * increment()  : 自增
  * decrement()  : 自减
+ *
+ * const_cast<volatile int*>用法的目的:
+ * 为了配合get()函数的const属性, 我们可以认为get()函数是const的.
 **************************************/
 namespace fnet
 {
