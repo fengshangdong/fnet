@@ -15,7 +15,7 @@ using namespace fnet;
 class Foo
 {
 public:
-	void doit() const;
+  void doit() const;
 };
 
 typedef std::vector<Foo> FooList;
@@ -25,48 +25,48 @@ MutexLock mutex;
 
 void post(const Foo& f)
 {
-	printf("post\n");
-	MutexLockGuard lock(mutex);
-	if(!g_foos.unique())
-	{
-		g_foos.reset(new FooList(*g_foos));
-		printf("copy the whole list\n");
-	}
-	assert(g_foos.unique());
-	g_foos->push_back(f);
+  printf("post\n");
+  MutexLockGuard lock(mutex);
+  if(!g_foos.unique())
+  {
+    g_foos.reset(new FooList(*g_foos));
+    printf("copy the whole list\n");
+  }
+  assert(g_foos.unique());
+  g_foos->push_back(f);
 }
 
 void traverse()
 {
-	FooListPtr foos;
-	{
-		MutexLockGuard lock(mutex);
-		foos = g_foos;
-		assert(!g_foos.unique());
-	}
+  FooListPtr foos;
+  {
+    MutexLockGuard lock(mutex);
+    foos = g_foos;
+    assert(!g_foos.unique());
+  }
 
-	for(std::vector<Foo>::const_iterator it = foos->begin();
-			it != foos->end(); ++it)
-	{
-		it->doit();
-	}
+  for(std::vector<Foo>::const_iterator it = foos->begin();
+      it != foos->end(); ++it)
+  {
+    it->doit();
+  }
 }
 
 void Foo::doit() const
 {
-	Foo f;
-	post(f);
-	printf("doit\n");
+  Foo f;
+  post(f);
+  printf("doit\n");
 }
 
 int main()
 {
-	{
-		g_foos.reset(new FooList);
-		Foo f;
-		post(f);
-		post(f);
-		traverse();
-	}
-	printf("数组大小:%d\n",g_foos->size());
+  {
+    g_foos.reset(new FooList);
+    Foo f;
+    post(f);
+    post(f);
+    traverse();
+  }
+  printf("数组大小:%d\n",g_foos->size());
 }

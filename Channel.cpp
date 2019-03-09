@@ -26,7 +26,7 @@ void Channel::update()
 void Channel::handleEvent()
 {
   if (revents_ & POLLNVAL) {
-		std::cout<<"Channel::handle_event() POLLNVAL"<<std::endl;
+    std::cout<<"Channel::handle_event() POLLNVAL"<<std::endl;
   }
 
   if (revents_ & (POLLERR | POLLNVAL)) {

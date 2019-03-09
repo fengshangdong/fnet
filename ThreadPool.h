@@ -27,7 +27,7 @@ namespace fnet
 class ThreadPool : public fnet::Noncopyable
 {
 public:
-	typedef std::function<void ()> Task;
+  typedef std::function<void ()> Task;
 
   explicit ThreadPool(const std::string& name = std::string());
   ~ThreadPool();

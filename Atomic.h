@@ -20,33 +20,33 @@ namespace fnet
 class Atomic : public Noncopyable
 {
 public:
-	Atomic()
-		: value_(0)
-	{
-	}
+  Atomic()
+    : value_(0)
+  {
+  }
 
-	int get() const
-	{
-		return __sync_val_compare_and_swap(const_cast<volatile int*>(&value_), 0, 0);
-	}
+  int get() const
+  {
+    return __sync_val_compare_and_swap(const_cast<volatile int*>(&value_), 0, 0);
+  }
 
-	int getAndAdd(int x)
-	{
-		return __sync_fetch_and_add(&value_, x);
-	}
+  int getAndAdd(int x)
+  {
+    return __sync_fetch_and_add(&value_, x);
+  }
 
-	void increment()
-	{
-		getAndAdd(1);
-	}
+  void increment()
+  {
+    getAndAdd(1);
+  }
 
-	void decrement()
-	{
-		getAndAdd(-1);
-	}
+  void decrement()
+  {
+    getAndAdd(-1);
+  }
 
 private:
-	volatile int value_;
+ volatile int value_;
 };
 
 }

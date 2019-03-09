@@ -32,7 +32,7 @@ void ThreadPool::start(int numThreads)
     char id[32];
     snprintf(id, sizeof id, "%d", i);
     threads_.push_back(new Thread(
-          std::bind(&ThreadPool::runInThread, this), name_+id));
+	  std::bind(&ThreadPool::runInThread, this), name_+id));
     threads_[i]->start();
   }
 }
@@ -78,13 +78,13 @@ ThreadPool::Task ThreadPool::take()
 
 void ThreadPool::runInThread()
 {
-	while (running_)
-	{
-		Task task(take());
-		if (task)
-		{
-			task();
-		}
-	}
+  while (running_)
+  {
+    Task task(take());
+    if (task)
+    {
+      task();
+    }
+  }
 }
 

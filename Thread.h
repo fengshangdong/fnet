@@ -36,29 +36,30 @@ namespace fnet
 class Thread : public Noncopyable
 {
 public:
-	typedef std::function<void ()> ThreadFunc;
+  typedef std::function<void ()> ThreadFunc;
 
-	explicit Thread(const ThreadFunc&, const std::string& name = std::string());
-	~Thread();
+  explicit Thread(const ThreadFunc&,
+                  const std::string& name = std::string());
+  ~Thread();
 
-	void start();
-	void join();
+  void start();
+  void join();
 
-	bool started() const { return started_; }
-	pid_t tid() const { return *tid_; }
-	const std::string& name() const { return name_; }
+  bool started() const { return started_; }
+  pid_t tid() const { return *tid_; }
+  const std::string& name() const { return name_; }
 
-	static int num() { return num_.get(); }
+  static int num() { return num_.get(); }
 
 private:
-	bool        started_;
-	bool        joined_;
-	pthread_t   pthreadId_;
-	std::shared_ptr<pid_t> tid_;
-	ThreadFunc  func_;
-	std::string name_;
+  bool        started_;
+  bool        joined_;
+  pthread_t   pthreadId_;
+  std::shared_ptr<pid_t> tid_;
+  ThreadFunc  func_;
+  std::string name_;
 
-	static Atomic num_;
+  static Atomic num_;
 };
 
 pid_t tid();

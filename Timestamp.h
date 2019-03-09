@@ -9,7 +9,7 @@ namespace fnet
 
 class Timestamp
 {
- public:
+public:
   Timestamp();
 
   explicit Timestamp(int64_t microSecondsSinceEpoch);
@@ -19,14 +19,20 @@ class Timestamp
 
   static Timestamp now();
 
+  bool valid() const { return microSecondsSinceEpoch_ > 0; }
   static Timestamp invalid();
 
-	int64_t microSecondsSinceEpoch() const { return microSecondsSinceEpoch_; }
+  int64_t microSecondsSinceEpoch() const { return microSecondsSinceEpoch_; }
   static const int kMicroSecondsPerSecond = 1000 * 1000;
 
- private:
+private:
   int64_t microSecondsSinceEpoch_;
 };
+
+inline bool operator<(Timestamp lhs, Timestamp rhs)
+{
+  return lhs.microSecondsSinceEpoch() < rhs.microSecondsSinceEpoch();
+}
 
 inline Timestamp addTime(Timestamp timestamp, double seconds)
 {

@@ -10,7 +10,7 @@ int main()
   printf("%s\n", now.toString().c_str());
   printf("%s\n", now.toFormattedString().c_str());
 
-	now = addTime(now, 3600);
+  now = addTime(now, 3600);
   printf("%s\n", now.toString().c_str());
   printf("%s\n", now.toFormattedString().c_str());
 }

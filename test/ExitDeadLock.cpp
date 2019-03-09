@@ -10,32 +10,32 @@ using namespace fnet;
 
 void Exit()
 {
-	exit(1);
+  exit(1);
 }
 
 class Global
 {
 public:
-	void doit()
-	{
-		MutexLockGuard lock(mutex_);
-		Exit();
-	}
+  void doit()
+  {
+    MutexLockGuard lock(mutex_);
+    Exit();
+  }
 
-	~Global()
-	{
-		printf("before ~Global\n");
-		MutexLockGuard g(mutex_);
-		printf("~Global cleanning\n");
-	}
+  ~Global()
+  {
+    printf("before ~Global\n");
+    MutexLockGuard g(mutex_);
+    printf("~Global cleanning\n");
+  }
 
 private:
-	MutexLock mutex_;
+  MutexLock mutex_;
 };
 
 Global g_obj;
 
 int main()
 {
-	g_obj.doit();
+  g_obj.doit();
 }

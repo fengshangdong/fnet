@@ -21,13 +21,13 @@ Timestamp Poller::poll(int timeoutMs, ChannelList* activeChannels)
   int numEvents = ::poll(&*pollfds_.begin(), pollfds_.size(), timeoutMs);
   Timestamp now(Timestamp::now());
   if (numEvents > 0) {
-		std::cout<<numEvents<<" events happend"<<std::endl;
+    std::cout<<numEvents<<" events happend"<<std::endl;
     fillActiveChannels(numEvents, activeChannels);
   } else if (numEvents == 0) {
-		std::cout<<this<<" non events happend"<<std::endl;
+    std::cout<<this<<" non events happend"<<std::endl;
   } else {
-		std::cout<<this<<" error events happend"<<std::endl;
-		exit(0);
+    std::cout<<this<<" error events happend"<<std::endl;
+    exit(0);
   }
   return now;
 }
@@ -36,7 +36,7 @@ void Poller::fillActiveChannels(int numEvents,
                                 ChannelList* activeChannels) const
 {
   for (PollFdList::const_iterator pfd = pollfds_.begin();
-      pfd != pollfds_.end() && numEvents > 0; ++pfd)
+       pfd != pollfds_.end() && numEvents > 0; ++pfd)
   {
     if (pfd->revents > 0)
     {

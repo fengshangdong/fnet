@@ -11,7 +11,7 @@ class EventLoop;
 
 class Channel : public Noncopyable
 {
- public:
+public:
   typedef std::function<void()> EventCallback;
 
   Channel(EventLoop* loop, int fd);
@@ -40,7 +40,7 @@ class Channel : public Noncopyable
 
   EventLoop* ownerLoop() { return loop_; }
 
- private:
+private:
   void update();
 
   static const int kNoneEvent;

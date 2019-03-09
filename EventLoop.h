@@ -13,37 +13,37 @@ class Poller;
 
 class EventLoop : public Noncopyable
 {
- public:
-	EventLoop();
-	~EventLoop();
+public:
+  EventLoop();
+  ~EventLoop();
 
-	void loop();
-	void quit();
+  void loop();
+  void quit();
 
-	void updateChannel(Channel* channel);
+  void updateChannel(Channel* channel);
 
-	void assertInLoopThread()
-	{
-		if (!isInLoopThread())
-		{
-			abortNotInLoopThread();
-		}
-	}
+  void assertInLoopThread()
+  {
+    if (!isInLoopThread())
+    {
+      abortNotInLoopThread();
+    }
+  }
 
-	bool isInLoopThread() const
-	{
-		return threadId_ == tid();
-	}
+  bool isInLoopThread() const
+  {
+    return threadId_ == tid();
+  }
 
- private:
-	void abortNotInLoopThread();
-	typedef std::vector<Channel*> ChannelList;
+private:
+  void abortNotInLoopThread();
+  typedef std::vector<Channel*> ChannelList;
 
-	bool looping_;
-	bool quit_;
-	const pid_t threadId_;
-	std::unique_ptr<Poller> poller_;
-	ChannelList activeChannels_;
+  bool looping_;
+  bool quit_;
+  const pid_t threadId_;
+  std::unique_ptr<Poller> poller_;
+  ChannelList activeChannels_;
 };
 
 }

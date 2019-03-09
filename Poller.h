@@ -17,7 +17,7 @@ class Channel;
 
 class Poller : public Noncopyable
 {
- public:
+public:
   typedef std::vector<Channel*> ChannelList;
 
   Poller(EventLoop* loop);
@@ -31,7 +31,7 @@ class Poller : public Noncopyable
 
   void assertInLoopThread() { ownerLoop_->assertInLoopThread(); }
 
- private:
+private:
   void fillActiveChannels(int numEvents,
                           ChannelList* activeChannels) const;
 
