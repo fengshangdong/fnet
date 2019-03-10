@@ -34,6 +34,8 @@ TEST = \
        requestinventory_test2   \
        timestamp_test           \
        thread_test              \
+       thread_test1             \
+       thread_test2             \
        threadpool_test          \
 
 all: $(TEST)
@@ -49,6 +51,8 @@ atomic_test:                      test/Atomic_test.cpp
 fork_test:                        test/Fork_test.cpp
 observer:                         test/Observer.cpp
 thread_test:                      test/Thread_test.cpp
+thread_test1:                     test/Thread_test1.cpp
+thread_test2:                     test/Thread_test2.cpp
 copyonwrite_test:                 test/CopyOnWrite_test.cpp
 counter:                          test/Counter.cpp
 destruct:                         test/destruct.cpp
