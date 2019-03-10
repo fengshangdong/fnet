@@ -24,7 +24,7 @@ public:
 
   TimerId addTimer(const TimerCallback& cb,
                    Timestamp when,
-		   double interval);
+                   double interval);
 
 private:
   typedef std::pair<Timestamp, Timer*> Entry;

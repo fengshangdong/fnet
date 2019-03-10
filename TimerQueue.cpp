@@ -20,6 +20,7 @@ int createTimerfd()
   if (timerfd < 0)
   {
     std::cout<< "Failed in timerfd_create";
+    abort();
   }
   return timerfd;
 }
@@ -48,6 +49,7 @@ void readTimerfd(int timerfd, Timestamp now)
   if (n != sizeof howmany)
   {
     std::cout<< "TimerQueue::handleRead() reads " << n << " bytes instead of 8";
+    abort();
   }
 }
 
@@ -63,6 +65,7 @@ void resetTimerfd(int timerfd, Timestamp expiration)
   if (ret)
   {
     std::cout<< "timerfd_settime()";
+    abort();
   }
 }
 
@@ -94,7 +97,7 @@ TimerQueue::~TimerQueue()
 
 TimerId TimerQueue::addTimer(const TimerCallback& cb,
                              Timestamp when,
-			     double interval)
+                             double interval)
 {
   Timer* timer = new Timer(cb, when, interval);
   loop_->assertInLoopThread();
