@@ -1,7 +1,6 @@
 #ifndef BASE_MUTEX_H
 #define BASE_MUTEX_H
 
-#include "Thread.h"
 #include "Noncopyable.h"
 #include <assert.h>
 #include <pthread.h>
@@ -24,36 +23,22 @@ class MutexLock : public Noncopyable
 {
 public:
   MutexLock()
-    : holder_(0)
   {
     pthread_mutex_init(&mutex_, NULL);
   }
 
   ~MutexLock()
   {
-    assert(holder_ == 0);
     pthread_mutex_destroy(&mutex_);
-  }
-
-  bool isLockedByThisThread()
-  {
-    return holder_ == tid();
-  }
-
-  void assertLocked()
-  {
-    assert(isLockedByThisThread());
   }
 
   void lock()
   {
     pthread_mutex_lock(&mutex_);
-    holder_ = tid();
   }
 
   void unlock()
   {
-    holder_ = 0;
     pthread_mutex_unlock(&mutex_);
   }
 
@@ -64,7 +49,6 @@ public:
 
 private:
   pthread_mutex_t mutex_;
-  pid_t holder_;
 };
 
 class MutexLockGuard : public Noncopyable

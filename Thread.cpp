@@ -15,47 +15,6 @@ pid_t gettid()
   return static_cast<pid_t>(::syscall(SYS_gettid));
 }
 
-struct ThreadData
-{
-  typedef Thread::ThreadFunc ThreadFunc;
-  ThreadFunc func_;
-  std::string name_;
-  std::weak_ptr<pid_t> wkTid_;
-
-  ThreadData(const ThreadFunc& func,
-             const std::string& name,
-             const std::shared_ptr<pid_t>& tid)
-    : func_(func),
-      name_(name),
-      wkTid_(tid)
-  { }
-
-  void runInThread()
-  {
-    pid_t tid_ = tid();
-    std::shared_ptr<pid_t> ptid = wkTid_.lock();
-
-    if (ptid)
-    {
-      *ptid = tid_;
-      ptid.reset();
-    }
-
-    t_threadName = name_.c_str();
-    func_();
-    t_threadName = "finished";
-  }
-};
-
-void* startThread(void* obj)
-{
-  ThreadData* data = static_cast<ThreadData*>(obj);
-  data->runInThread();
-  delete data;
-  return NULL;
-}
-
-
 pid_t tid()
 {
   if (t_cachedTid == 0)
@@ -77,11 +36,25 @@ bool isMainThread()
 
 Atomic Thread::num_;
 
+void Thread::run()
+{
+  t_threadName = name_.c_str();
+  func_();
+  t_threadName = "finished";
+}
+
+void* Thread::threadRoutine(void *arg)
+{
+  Thread* thread = static_cast<Thread*>(arg);
+  thread->run();
+  return NULL;
+}
+
 Thread::Thread(const ThreadFunc& func, const std::string& n)
   : started_(false),
     joined_(false),
     pthreadId_(0),
-    tid_(new pid_t(0)),
+    tid_(tid()),
     func_(func),
     name_(n)
 {
@@ -101,11 +74,9 @@ void Thread::start()
   assert(!started_);
   started_ = true;
 
-  ThreadData* data = new ThreadData(func_, name_, tid_);
-  if (pthread_create(&pthreadId_, NULL, &startThread, data))
+  if (pthread_create(&pthreadId_, NULL, threadRoutine, this))
   {
     started_ = false;
-    delete data;
     abort();
   }
 }

@@ -1,8 +1,11 @@
 #include "../Mutex.h"
+#include "../Thread.h"
 #include <set>
 #include <memory>
 #include <stdio.h>
 #include <unistd.h>
+
+using namespace fnet;
 
 class Request;
 class Inventory
@@ -101,7 +104,7 @@ void threadFunc()
 
 int main()
 {
-  fnet::Thread thread(threadFunc);
+  Thread thread(threadFunc);
   thread.start();
   usleep(500*1000);
   g_inventory.printAll();

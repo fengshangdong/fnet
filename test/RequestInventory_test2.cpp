@@ -1,4 +1,5 @@
 #include "../Mutex.h"
+#include "../Thread.h"
 #include <set>
 #include <memory>
 #include <stdio.h>
