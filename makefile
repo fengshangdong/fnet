@@ -2,10 +2,16 @@ CC = g++
 CXXFLAGS = -g -Wall -march=native -std=c++11 -I. -pthread
 LDFLAGS = -L. -lpthread -lfnet
 NET_SRC =                       \
+       Acceptor.cpp             \
        Channel.cpp              \
        EventLoop.cpp            \
        EventLoopThread.cpp      \
+       InetAddress.cpp          \
        Poller.cpp               \
+       Socket.cpp               \
+       SocketsOps.cpp           \
+       TcpConnection.cpp        \
+       TcpServer.cpp            \
        Thread.cpp               \
        ThreadPool.cpp           \
        Timestamp.cpp            \
@@ -30,6 +36,8 @@ TEST = \
        reactor_test4            \
        reactor_test5            \
        reactor_test6            \
+       reactor_test7            \
+       reactor_test8            \
        requestinventory_test    \
        requestinventory_test2   \
        timestamp_test           \
@@ -62,6 +70,8 @@ reactor_test3:                    test/Reactor_test3.cpp
 reactor_test4:                    test/Reactor_test4.cpp
 reactor_test5:                    test/Reactor_test5.cpp
 reactor_test6:                    test/Reactor_test6.cpp
+reactor_test7:                    test/Reactor_test7.cpp
+reactor_test8:                    test/Reactor_test8.cpp
 requestinventory_test:            test/RequestInventory_test.cpp
 requestinventory_test2:           test/RequestInventory_test2.cpp
 thread_test:                      test/Thread_test.cpp
