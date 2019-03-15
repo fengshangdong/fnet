@@ -3,8 +3,9 @@
 
 #include "Buffer.h"
 #include "Callbacks.h"
-#include "InetAddress.h"
+#include "SocketsOps.h"
 #include "Timestamp.h"
+#include "InetAddress.h"
 #include "Noncopyable.h"
 #include <memory>
 #include <functional>
@@ -37,6 +38,9 @@ public:
   const InetAddress& peerAddress() { return peerAddr_; }
   bool connected() const { return state_ == kConnected; }
 
+  void send(const std::string& message);
+  void shutdown();
+
   void setConnectionCallback(const ConnectionCallback& cb)
   { connectionCallback_ = cb; }
 
@@ -50,13 +54,16 @@ public:
   void connectDestroyed();
 
 private:
-  enum StateE { kConnecting, kConnected, kDisconnected, };
+  enum StateE { kConnecting, kConnected, kDisconnecting, kDisconnected, };
 
   void setState(StateE s) { state_ = s; }
   void handleRead(Timestamp receiveTime);
   void handleWrite();
   void handleClose();
   void handleError();
+
+  void sendInLoop(const std::string& message);
+  void shutdownInLoop();
 
   EventLoop* loop_;
   std::string name_;
@@ -70,6 +77,7 @@ private:
   MessageCallback messageCallback_;
   CloseCallback closeCallback_;
   Buffer inputBuffer_;
+  Buffer outputBuffer_;
 };
 
 typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;

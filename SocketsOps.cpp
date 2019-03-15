@@ -1,4 +1,5 @@
 #include "SocketsOps.h"
+#include "Callbacks.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -9,11 +10,6 @@
 #include <iostream>
 
 using namespace fnet;
-
-template<typename To, typename From>
-inline To implicit_cast(From const &f) {
-  return f;
-}
 
 typedef struct sockaddr SA;
 
@@ -108,6 +104,15 @@ void sockets::close(int sockfd)
   if (::close(sockfd) < 0)
   {
     std::cout<< "sockets::close";
+    abort();
+  }
+}
+
+void sockets::shutdownWrite(int sockfd)
+{
+  if (::shutdown(sockfd, SHUT_WR) < 0)
+  {
+    std::cout << "sockets::shutdownWrite";
     abort();
   }
 }

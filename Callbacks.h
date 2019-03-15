@@ -7,8 +7,14 @@
 
 namespace fnet
 {
+
   class Buffer;
   class TcpConnection;
+
+  template<typename To, typename From>
+  inline To implicit_cast(From const &f) {
+    return f;
+  }
   
   typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
 

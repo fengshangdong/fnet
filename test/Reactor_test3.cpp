@@ -1,6 +1,6 @@
-#include "../Channel.h"
-#include "../EventLoop.h"
-#include "../Timestamp.h"
+#include "Channel.h"
+#include "EventLoop.h"
+#include "Timestamp.h"
 
 #include <stdio.h>
 #include <unistd.h>

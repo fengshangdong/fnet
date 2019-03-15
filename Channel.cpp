@@ -14,12 +14,14 @@ Channel::Channel(EventLoop* loop, int fdArg)
     fd_(fdArg),
     events_(0),
     revents_(0),
-    index_(-1)
+    index_(-1),
+    eventHandling_(false)
 {
 }
 
 Channel::~Channel()
 {
+  assert(!eventHandling_);
 }
 
 void Channel::update()
@@ -29,6 +31,7 @@ void Channel::update()
 
 void Channel::handleEvent(Timestamp receiveTime)
 {
+  eventHandling_ = true;
   if (revents_ & POLLNVAL) {
     std::cout<<"Channel::handle_event() POLLNVAL"<<std::endl;
   }
@@ -44,4 +47,5 @@ void Channel::handleEvent(Timestamp receiveTime)
   if (revents_ & POLLOUT) {
     if (writeCallback_) writeCallback_();
   }
+  eventHandling_ = false;
 }

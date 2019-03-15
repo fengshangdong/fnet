@@ -1,5 +1,5 @@
-#include "../EventLoop.h"
-#include "../Thread.h"
+#include "EventLoop.h"
+#include "Thread.h"
 #include <stdio.h>
 #include <unistd.h>
 

@@ -38,6 +38,7 @@ public:
   void enableWriting() { events_ |= kWriteEvent; update(); }
   void disableWriting() { events_ &= ~kWriteEvent; update(); }
   void disableAll() { events_ = kNoneEvent; update(); }
+  bool isWriting() const { return events_ & kWriteEvent; }
 
   // for Poller
   int index() { return index_; }
@@ -58,6 +59,7 @@ private:
   int        revents_;
   int        index_; // used by Poller.
 
+  bool eventHandling_;
   ReadEventCallback readCallback_;
   EventCallback writeCallback_;
   EventCallback errorCallback_;
