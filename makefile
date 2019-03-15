@@ -3,6 +3,7 @@ CXXFLAGS = -g -Wall -march=native -std=c++11 -I. -pthread
 LDFLAGS = -L. -lpthread -lfnet
 NET_SRC =                       \
        Acceptor.cpp             \
+       Buffer.cpp               \
        Channel.cpp              \
        EventLoop.cpp            \
        EventLoopThread.cpp      \

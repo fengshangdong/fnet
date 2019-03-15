@@ -7,6 +7,7 @@
 #include <iostream>
 
 using namespace fnet;
+using namespace std::placeholders;
 
 TcpConnection::TcpConnection(EventLoop* loop,
                              const std::string& nameArg,
@@ -24,7 +25,13 @@ TcpConnection::TcpConnection(EventLoop* loop,
   std::cout<< "TcpConnection::ctor[" <<  name_ << "] at " << this
            << " fd=" << sockfd<<std::endl;
   channel_->setReadCallback(
-      std::bind(&TcpConnection::handleRead, this));
+      std::bind(&TcpConnection::handleRead, this, _1));
+  channel_->setWriteCallback(
+      std::bind(&TcpConnection::handleWrite, this));
+  channel_->setCloseCallback(
+      std::bind(&TcpConnection::handleClose, this));
+  channel_->setErrorCallback(
+      std::bind(&TcpConnection::handleError, this));
 }
 
 TcpConnection::~TcpConnection()
@@ -39,14 +46,51 @@ void TcpConnection::connectEstablished()
   assert(state_ == kConnecting);
   setState(kConnected);
   channel_->enableReading();
-
   connectionCallback_(shared_from_this());
 }
 
-void TcpConnection::handleRead()
+void TcpConnection::connectDestroyed()
 {
-  char buf[65536];
-  ssize_t n = ::read(channel_->fd(), buf, sizeof buf);
-  messageCallback_(shared_from_this(), buf, n);
+  loop_->assertInLoopThread();
+  assert(state_ == kConnected);
+  setState(kDisconnected);
+  channel_->disableAll();
+  connectionCallback_(shared_from_this());
+  loop_->removeChannel(channel_.get());
 }
 
+void TcpConnection::handleRead(Timestamp receiveTime)
+{
+  int savedErrno = 0;
+  ssize_t n = inputBuffer_.readFd(channel_->fd(), &savedErrno);
+  if (n > 0) {
+    messageCallback_(shared_from_this(), &inputBuffer_, receiveTime);
+  } else if (n == 0) {
+    handleClose();
+  } else {
+    errno = savedErrno;
+    std::cout<< "TcpConnection::handleRead"<<std::endl;
+    handleError();
+  }
+}
+
+void TcpConnection::handleWrite()
+{
+}
+
+void TcpConnection::handleClose()
+{
+  loop_->assertInLoopThread();
+  std::cout<< "TcpConnection::handleClose state = " << state_<<std::endl;
+  assert(state_ == kConnected);
+  // we don't close fd, leave it to dtor, so we can find leaks easily.
+  channel_->disableAll();
+  // must be the last line
+  closeCallback_(shared_from_this());
+}
+
+void TcpConnection::handleError()
+{
+  std::cout << "TcpConnection::handleError [" << name_ <<"]";
+  abort();
+}

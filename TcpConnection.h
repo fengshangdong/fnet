@@ -1,8 +1,10 @@
 #ifndef NET_TCPCONNECTION_H
 #define NET_TCPCONNECTION_H
 
+#include "Buffer.h"
 #include "Callbacks.h"
 #include "InetAddress.h"
+#include "Timestamp.h"
 #include "Noncopyable.h"
 #include <memory>
 #include <functional>
@@ -41,13 +43,20 @@ public:
   void setMessageCallback(const MessageCallback& cb)
   { messageCallback_ = cb; }
 
+  void setCloseCallback(const CloseCallback& cb)
+  { closeCallback_ = cb; }
+
   void connectEstablished();   // should be called only once
+  void connectDestroyed();
 
 private:
-  enum StateE { kConnecting, kConnected, };
+  enum StateE { kConnecting, kConnected, kDisconnected, };
 
   void setState(StateE s) { state_ = s; }
-  void handleRead();
+  void handleRead(Timestamp receiveTime);
+  void handleWrite();
+  void handleClose();
+  void handleError();
 
   EventLoop* loop_;
   std::string name_;
@@ -59,6 +68,8 @@ private:
   InetAddress peerAddr_;
   ConnectionCallback connectionCallback_;
   MessageCallback messageCallback_;
+  CloseCallback closeCallback_;
+  Buffer inputBuffer_;
 };
 
 typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;

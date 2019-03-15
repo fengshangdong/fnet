@@ -2,6 +2,7 @@
 #define NET_CHANNEL_H
 
 #include <functional>
+#include "Timestamp.h"
 #include "Noncopyable.h"
 
 namespace fnet
@@ -13,16 +14,20 @@ class Channel : public Noncopyable
 {
 public:
   typedef std::function<void()> EventCallback;
+  typedef std::function<void(Timestamp)> ReadEventCallback;
 
   Channel(EventLoop* loop, int fd);
+  ~Channel();
 
-  void handleEvent();
-  void setReadCallback(const EventCallback& cb)
+  void handleEvent(Timestamp receiveTime);
+  void setReadCallback(const ReadEventCallback& cb)
   { readCallback_ = cb; }
   void setWriteCallback(const EventCallback& cb)
   { writeCallback_ = cb; }
   void setErrorCallback(const EventCallback& cb)
   { errorCallback_ = cb; }
+  void setCloseCallback(const EventCallback& cb)
+  { closeCallback_ = cb; }
 
   int fd() const { return fd_; }
   int events() const { return events_; }
@@ -53,9 +58,10 @@ private:
   int        revents_;
   int        index_; // used by Poller.
 
-  EventCallback readCallback_;
+  ReadEventCallback readCallback_;
   EventCallback writeCallback_;
   EventCallback errorCallback_;
+  EventCallback closeCallback_;
 };
 
 }

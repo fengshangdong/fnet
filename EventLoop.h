@@ -28,6 +28,8 @@ public:
   void loop();
   void quit();
 
+  Timestamp pollReturnTime() const { return pollReturnTime_; }
+
   void runInLoop(const Functor& cb);
   void queueInLoop(const Functor& cb);
 
@@ -36,8 +38,8 @@ public:
   TimerId runEvery(double interval, const TimerCallback& cb);
 
   void wakeup();
-
   void updateChannel(Channel* channel);
+  void removeChannel(Channel* channel);
 
   void assertInLoopThread()
   {
@@ -48,9 +50,7 @@ public:
   }
 
   bool isInLoopThread() const
-  {
-    return threadId_ == tid();
-  }
+  { return threadId_ == tid(); }
 
 private:
   void abortNotInLoopThread();
@@ -66,6 +66,7 @@ private:
   int wakeupFd_;
 
   const pid_t threadId_;
+  Timestamp pollReturnTime_;
   std::unique_ptr<Poller> poller_;
   std::unique_ptr<TimerQueue> timerQueue_;
   std::unique_ptr<Channel> wakeupChannel_;

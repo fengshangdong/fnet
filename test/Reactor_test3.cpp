@@ -1,5 +1,6 @@
 #include "../Channel.h"
 #include "../EventLoop.h"
+#include "../Timestamp.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -9,9 +10,9 @@
 
 fnet::EventLoop* g_loop;
 
-void timeout()
+void timeout(fnet::Timestamp receiveTime)
 {
-  printf("Timeout!\n");
+  printf("%s Timeout!\n",receiveTime.toFormattedString().c_str());
   g_loop->quit();
 }
 

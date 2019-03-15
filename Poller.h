@@ -28,6 +28,7 @@ public:
 
   // Must be called in the loop thread.
   void updateChannel(Channel* channel);
+  void removeChannel(Channel* channel);
 
   void assertInLoopThread() { ownerLoop_->assertInLoopThread(); }
 

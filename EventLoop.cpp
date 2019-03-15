@@ -43,6 +43,7 @@ EventLoop::EventLoop()
   }
   wakeupChannel_->setReadCallback(
       std::bind(&EventLoop::handleRead, this));
+  wakeupChannel_->enableReading();
 }
 
 EventLoop::~EventLoop()
@@ -62,11 +63,11 @@ void EventLoop::loop()
   while (!quit_)
   {
     activeChannels_.clear();
-    poller_->poll(kPollTimeMs, &activeChannels_);
+    pollReturnTime_ = poller_->poll(kPollTimeMs, &activeChannels_);
     for (ChannelList::iterator it = activeChannels_.begin();
         it != activeChannels_.end(); ++it)
     {
-      (*it)->handleEvent();
+      (*it)->handleEvent(pollReturnTime_);
     }
     doPendingFunctors();
   }
@@ -131,6 +132,13 @@ void EventLoop::updateChannel(Channel* channel)
   assert(channel->ownerLoop() == this);
   assertInLoopThread();
   poller_->updateChannel(channel);
+}
+
+void EventLoop::removeChannel(Channel* channel)
+{
+  assert(channel->ownerLoop() == this);
+  assertInLoopThread();
+  poller_->removeChannel(channel);
 }
 
 void EventLoop::abortNotInLoopThread()
