@@ -1,4 +1,5 @@
 #include "Buffer.h"
+#include "Callbacks.h"
 #include "SocketsOps.h"
 #include <errno.h>
 #include <memory.h>
@@ -18,7 +19,7 @@ ssize_t Buffer::readFd(int fd, int* savedErrno)
   const ssize_t n = readv(fd, vec, 2);
   if (n < 0) {
     *savedErrno = errno;
-  } else if (static_cast<size_t>(n) <= writable) {
+  } else if (implicit_cast<size_t>(n) <= writable) {
     writerIndex_ += n;
   } else {
     writerIndex_ = buffer_.size();

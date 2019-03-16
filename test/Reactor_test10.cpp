@@ -10,16 +10,20 @@ void onConnection(const fnet::TcpConnectionPtr& conn)
 {
   if (conn->connected())
   {
-    printf("onConnection(): new connection [%s] from %s\n",
+    printf("onConnection(): tid=%d new connection [%s] from %s\n",
+           fnet::tid(),
            conn->name().c_str(),
            conn->peerAddress().toHostPort().c_str());
-    conn->send(message1);
-    conn->send(message2);
+    if (!message1.empty())
+      conn->send(message1);
+    if (!message2.empty())
+      conn->send(message2);
     conn->shutdown();
   }
   else
   {
-    printf("onConnection(): connection [%s] is down\n",
+    printf("onConnection(): tid=%d connection [%s] is down\n",
+           fnet::tid(),
            conn->name().c_str());
   }
 }
@@ -28,7 +32,8 @@ void onMessage(const fnet::TcpConnectionPtr& conn,
                fnet::Buffer* buf,
                fnet::Timestamp receiveTime)
 {
-  printf("onMessage(): received %zd bytes from connection [%s] at %s\n",
+  printf("onMessage(): tid=%d received %zd bytes from connection [%s] at %s\n",
+         fnet::tid(),
          buf->readableBytes(),
          conn->name().c_str(),
          receiveTime.toFormattedString().c_str());
@@ -60,7 +65,11 @@ int main(int argc, char* argv[])
   fnet::TcpServer server(&loop, listenAddr);
   server.setConnectionCallback(onConnection);
   server.setMessageCallback(onMessage);
-  server.start();
+  if (argc > 3)
+  {
+    server.setThreadNum(atoi(argv[3]));
+  }
 
+  server.start();
   loop.loop();
 }

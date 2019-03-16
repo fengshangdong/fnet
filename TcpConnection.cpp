@@ -61,7 +61,11 @@ void TcpConnection::sendInLoop(const std::string& message)
     nwrote = ::write(channel_->fd(), message.data(), message.size());
     if (nwrote >= 0) {
       if (implicit_cast<size_t>(nwrote) < message.size()) {
-        std::cout << "I am going to write more data" << std::endl;
+        std::cout << "I am going to write more data " << __LINE__<<std::endl;
+      } else if (writeCompleteCallback_) {
+        std::cout << "queueInLoop writeCompleteCallback_ " <<__LINE__<< std::endl;
+        loop_->queueInLoop(
+            std::bind(writeCompleteCallback_, shared_from_this()));
       }
     } else {
       nwrote = 0;
@@ -100,6 +104,10 @@ void TcpConnection::shutdownInLoop()
   }
 }
 
+void TcpConnection::setTcpNoDelay(bool on)
+{
+  socket_->setTcpNoDelay(on);
+}
 
 void TcpConnection::connectEstablished()
 {
@@ -146,11 +154,16 @@ void TcpConnection::handleWrite()
       outputBuffer_.retrieve(n);
       if (outputBuffer_.readableBytes() == 0) {
         channel_->disableWriting();
+        if (writeCompleteCallback_) {
+          std::cout << "queueInLoop writeCompleteCallback_ " <<__LINE__<< std::endl;
+          loop_->queueInLoop(
+              std::bind(writeCompleteCallback_, shared_from_this()));
+        }
         if (state_ == kDisconnecting) {
           shutdownInLoop();
         }
       } else {
-        std::cout << "I am going to write more data" << std::endl;
+        std::cout << "I am going to write more data" <<__LINE__<< std::endl;
       }
     } else {
       std::cout << "TcpConnection::handleWrite" << std::endl;
@@ -173,7 +186,6 @@ void TcpConnection::handleClose()
 
 void TcpConnection::handleError()
 {
-  std::cout << "TcpConnection::handleError [" << name_ <<"]";
-  abort();
+  std::cout << "ERR::TcpConnection::handleError [" << name_ <<"]";
 }
 

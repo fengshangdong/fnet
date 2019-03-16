@@ -7,6 +7,7 @@ NET_SRC =                       \
        Channel.cpp              \
        EventLoop.cpp            \
        EventLoopThread.cpp      \
+       EventLoopThreadPool.cpp  \
        InetAddress.cpp          \
        Poller.cpp               \
        Socket.cpp               \
@@ -41,6 +42,7 @@ TEST = \
        reactor_test8            \
        reactor_test9            \
        reactor_test10           \
+       reactor_test11           \
        requestinventory_test    \
        requestinventory_test2   \
        timestamp_test           \
@@ -77,6 +79,7 @@ reactor_test7:                    test/Reactor_test7.cpp
 reactor_test8:                    test/Reactor_test8.cpp
 reactor_test9:                    test/Reactor_test9.cpp
 reactor_test10:                   test/Reactor_test10.cpp
+reactor_test11:                   test/Reactor_test11.cpp
 requestinventory_test:            test/RequestInventory_test.cpp
 requestinventory_test2:           test/RequestInventory_test2.cpp
 thread_test:                      test/Thread_test.cpp

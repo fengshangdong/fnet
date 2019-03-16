@@ -40,12 +40,16 @@ public:
 
   void send(const std::string& message);
   void shutdown();
+  void setTcpNoDelay(bool on);
 
   void setConnectionCallback(const ConnectionCallback& cb)
   { connectionCallback_ = cb; }
 
   void setMessageCallback(const MessageCallback& cb)
   { messageCallback_ = cb; }
+
+  void setWriteCompleteCallback(const WriteCompleteCallback& cb)
+  { writeCompleteCallback_ = cb; }
 
   void setCloseCallback(const CloseCallback& cb)
   { closeCallback_ = cb; }
@@ -75,6 +79,7 @@ private:
   InetAddress peerAddr_;
   ConnectionCallback connectionCallback_;
   MessageCallback messageCallback_;
+  WriteCompleteCallback writeCompleteCallback_;
   CloseCallback closeCallback_;
   Buffer inputBuffer_;
   Buffer outputBuffer_;

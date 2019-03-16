@@ -23,6 +23,7 @@ namespace fnet
   typedef std::function<void (const TcpConnectionPtr&,
                               Buffer* buf,
                               Timestamp)> MessageCallback;
+  typedef std::function<void (const TcpConnectionPtr&)> WriteCompleteCallback;
   typedef std::function<void (const TcpConnectionPtr&)> CloseCallback;
 
 }
