@@ -45,6 +45,12 @@ public:
     std::swap(writerIndex_, rhs.writerIndex_);
   }
 
+  const char* findCRLF() const
+  {
+    const char* crlf = std::search(peek(), beginWrite(), kCRLF, kCRLF+2);
+    return crlf == beginWrite() ? NULL : crlf;
+  }
+
   size_t readableBytes() const
   { return writerIndex_ - readerIndex_; }
 
@@ -173,6 +179,7 @@ private:
   std::vector<char> buffer_;
   size_t readerIndex_;
   size_t writerIndex_;
+  static const char kCRLF[];
 };
 
 }

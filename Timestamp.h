@@ -17,6 +17,11 @@ public:
   std::string toString() const;
   std::string toFormattedString() const;
 
+  void swap(Timestamp& that)
+  {
+    std::swap(microSecondsSinceEpoch_, that.microSecondsSinceEpoch_);
+  }
+
   static Timestamp now();
 
   bool valid() const { return microSecondsSinceEpoch_ > 0; }
